@@ -353,4 +353,7 @@ h1 {
 .commune-dropdown li:hover {
   background-color: #f0f0f0;
 }
+  input[type="text"] {
+    font-size: 16px; /* Minimum font size to prevent zoom on mobile */
+  }
 </style>
