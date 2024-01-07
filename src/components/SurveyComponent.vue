@@ -252,7 +252,7 @@ const downloadData = async () => {
     const querySnapshot = await getDocs(surveyCollectionRef);
     let data = [];
     let maxWidths = {}; // Object to keep track of maximum width for each column
-    const minWidth = 1; // Minimum width in Excel units, approximately 3 cm
+    const minWidth = 3; // Minimum width in Excel units,
 
     querySnapshot.forEach((doc) => {
       let docData = doc.data();
