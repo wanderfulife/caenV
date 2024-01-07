@@ -35,11 +35,10 @@
         <div v-if="reponse.type <= 4">
 
           <div class="form-group">
-            <input class="form-control" type="text" v-model="reponse.origine"
-              placeholder="Entrer les premiere lettres de la COMMUNE" />
-            <ul v-if="showDropdown && reponse.origine && filteredCommunes.length" class="commune-dropdown">
-              <li v-for="(item, index) in filteredCommunes" :key="`${item['CODE INSEE']}-${index}`"
-                @click="selectCommune(item.COMMUNE, item.DEPARTEMENT)">
+            <input class="form-control" type="text" v-model="reponse.origine" placeholder="COMMUNE D'ORIGINE" />
+            <ul v-if="showDropdown && reponse.origine && filteredCommunesOrigine.length" class="commune-dropdown">
+              <li v-for="(item, index) in filteredCommunesOrigine" :key="`${item['CODE INSEE']}-${index}`"
+                @click="selectCommuneOrigine(item.COMMUNE, item.DEPARTEMENT)">
                 {{ item.COMMUNE }} - {{ item.DEPARTEMENT }}
               </li>
             </ul>
@@ -53,6 +52,44 @@
               </option>
             </select>
           </div>
+
+          <div class="form-group">
+            <label for="type">Motif Origine:</label>
+            <select id="type" v-model="reponse.motifOrigine" class="form-control">
+              <option v-for="option in motifOrigine" :key="option.id" :value="option.output">
+                {{ option.text }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <input class="form-control" type="text" v-model="reponse.destination" placeholder="COMMUNE DESTINATION" />
+            <ul v-if="showDropdown && reponse.destination && filteredCommunesDestination.length" class="commune-dropdown">
+              <li v-for="(item, index) in filteredCommunesDestination" :key="`${item['CODE INSEE']}-${index}`"
+                @click="selectCommuneDestination(item.COMMUNE, item.DEPARTEMENT)">
+                {{ item.COMMUNE }} - {{ item.DEPARTEMENT }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="form-group">
+            <label for="type">Motif Destination:</label>
+            <select id="type" v-model="reponse.motifDestination" class="form-control">
+              <option v-for="option in motifDestination" :key="option.id" :value="option.output">
+                {{ option.text }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="type">Frequence du deplacement:</label>
+            <select id="type" v-model="reponse.frequence" class="form-control">
+              <option v-for="option in frequence" :key="option.id" :value="option.output">
+                {{ option.text }}
+              </option>
+            </select>
+          </div>
+
         </div>
         <div v-else-if="reponse.occupation > 4">PL</div>
       </div>
@@ -67,13 +104,15 @@
 
 <script setup>
 import { ref, computed, watch } from "vue";
-import { postes, plaques, typeVehicule, occupation } from "./reponses";
+import { postes, plaques, typeVehicule, occupation, motifOrigine, motifDestination, frequence } from "./reponses";
 import insee from "./output.json";
 import { db } from "../../firebaseConfig";
 import * as XLSX from "xlsx";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 
 const data = ref(insee);
+
+//to delete
 
 const surveyCollectionRef = collection(db, "Caen");
 const num = ref(1);
@@ -84,6 +123,10 @@ const reponse = ref({
   num: num.value,
   occupation: "",
   origine: "",
+  motifOrigine: "",
+  destination: "",
+  motifDestination: "",
+  frequence: ""
 });
 
 const showSecondSet = ref(false);
@@ -92,23 +135,36 @@ const showReturnButton = ref(false);
 
 const showDropdown = ref(true);
 
-const allFieldsFilled = computed(() => {
-  return (
-    reponse.value.poste !== "" &&
-    reponse.value.plaque !== "" &&
-    reponse.value.type !== "" &&
-    reponse.value.occupation !== "" &&
-    reponse.value.origine !== ""
-  );
-});
 
-const selectCommune = (commune1, commune2) => {
+const allFieldsFilled = true
+// const allFieldsFilled = computed(() => {
+//   return (
+//     reponse.value.poste !== "" &&
+//     reponse.value.plaque !== "" &&
+//     reponse.value.type !== "" &&
+//     reponse.value.occupation !== "" &&
+//     reponse.value.origine !== "" &&
+//     reponse.value.motifOrigine !== "" &&
+//     reponse.value.destination !== "" &&
+//     reponse.value.motifDestination !== "" &&
+//   );
+// });
+
+const selectCommuneOrigine = (commune1, commune2) => {
   reponse.value.origine = commune1 + ' - ' + commune2;
+  showDropdown.value = false; // Hide the dropdown
+};
+
+const selectCommuneDestination = (commune1, commune2) => {
+  reponse.value.destination = commune1 + ' - ' + commune2;
   showDropdown.value = false; // Hide the dropdown
 };
 
 // To show the dropdown again when the user types
 watch(() => reponse.value.origine, (newValue) => {
+  showDropdown.value = Boolean(newValue);
+});
+watch(() => reponse.value.destination, (newValue) => {
   showDropdown.value = Boolean(newValue);
 });
 
@@ -118,14 +174,14 @@ watch(
     reponse.value.plaque,
     reponse.value.type,
     reponse.value.occupation,
-    reponse.value.origine
+
   ],
-  ([poste, plaque, type, occupation, origine]) => {
+  ([poste, plaque, type]) => {
     if (poste !== "" && plaque !== "" && type !== "") {
       showSecondSet.value = true;
       showSubmitButton.value = true;
       showReturnButton.value = true;
-    }  else {
+    } else {
       showSecondSet.value = false;
       showSubmitButton.value = false;
       showReturnButton.value = false;
@@ -134,14 +190,17 @@ watch(
 );
 
 
-const filteredCommunes = computed(() => {
+const filteredCommunesOrigine = computed(() => {
   return data.value.filter(item =>
     item.COMMUNE.toLowerCase().includes(reponse.value.origine.toLowerCase())
   );
 });
 
-
-
+const filteredCommunesDestination = computed(() => {
+  return data.value.filter(item =>
+    item.COMMUNE.toLowerCase().includes(reponse.value.destination.toLowerCase())
+  );
+});
 
 const returnButton = () => {
   reponse.value.type = "";
@@ -153,8 +212,11 @@ const isSubmitDisabled = computed(() => {
     reponse.value.plaque === "" ||
     reponse.value.type === "" ||
     reponse.value.origine === "" ||
-    reponse.value.occupation === ""
-
+    reponse.value.occupation === "" ||
+    reponse.value.motifOrigine === "" ||
+    reponse.value.destination === "" ||
+    reponse.value.motifDestination === "" ||
+    reponse.value.frequence === ""
   );
 });
 
@@ -168,6 +230,10 @@ const submitSurvey = async () => {
     q7: reponse.value.type,
     q8: reponse.value.occupation,
     q9: reponse.value.origine,
+    q10: reponse.value.motifOrigine,
+    q11: reponse.value.destination,
+    q12: reponse.value.motifDestination,
+    q13: reponse.value.frequence,
   });
   reponse.value.num++;
   reponse.value.poste = "";
@@ -175,6 +241,10 @@ const submitSurvey = async () => {
   reponse.value.type = "";
   reponse.value.occupation = "";
   reponse.value.origine = "";
+  reponse.value.motifOrigine = "";
+  reponse.value.destination = "";
+  reponse.value.motifDestination = "";
+  reponse.value.frequence = ""
 };
 
 const downloadData = async () => {
@@ -196,6 +266,10 @@ const downloadData = async () => {
         q7: docData.q7 || "",
         q8: docData.q8 || "",
         q9: docData.q9 || "",
+        q10: docData.q10 || "",
+        q11: docData.q11 || "",
+        q12: docData.q12 || "",
+        q13: docData.q13 || "",
       };
       data.push(mappedData);
     });
@@ -230,6 +304,10 @@ const downloadData = async () => {
         "q7",
         "q8",
         "q9",
+        "q10",
+        "q11",
+        "q12",
+        "q13"
       ],
       skipHeader: false,
     });
@@ -353,7 +431,9 @@ h1 {
 .commune-dropdown li:hover {
   background-color: #f0f0f0;
 }
-  input[type="text"] {
-    font-size: 16px; /* Minimum font size to prevent zoom on mobile */
-  }
+
+input[type="text"] {
+  font-size: 16px;
+  /* Minimum font size to prevent zoom on mobile */
+}
 </style>

@@ -1,3 +1,58 @@
+const motifOrigine = [
+	{ id: 0, output: 0, text: "domicile" },
+	{ id: 1, output: 1, text: "travail" },
+	{ id: 2, output: 2, text: "affaires professionnelles" },
+	{ id: 3, output: 3, text: "études" },
+	{ id: 4, output: 4, text: "achats" },
+	{ id: 5, output: 5, text: "soins, démarches admin" },
+	{ id: 6, output: 6, text: "loisirs" },
+	{ id: 7, output: 7, text: "visites" },
+	{ id: 8, output: 8, text: "vacances, week-end, tourisme" },
+	{ id: 9, output: 9, text: "rabattement sur transport en commun" },
+	{ id: 10, output: 10, text: "accompagnement + domicile" },
+	{ id: 11, output: 11, text: "accompagnement + travail" },
+	{ id: 12, output: 12, text: "accompagnement + affaires professionnelles" },
+	{ id: 13, output: 13, text: "accompagnement + études" },
+	{ id: 14, output: 14, text: "accompagnement + achats" },
+	{ id: 15, output: 15, text: "accompagnement + soins, démarches admin" },
+	{ id: 16, output: 16, text: "accompagnement + loisirs" },
+	{ id: 17, output: 17, text: "accompagnement + visites" },
+	{ id: 18, output: 18, text: "accompagnement + vacances, week-end, tourisme" },
+	{
+		id: 19,
+		output: 19,
+		text: "accompagnement + rabattement sur transport en commun",
+	},
+	{ id: 99, output: 99, text: "autre" },
+];
+
+const motifDestination = [
+	{ id: 0, output: 0, text: "domicile" },
+	{ id: 1, output: 1, text: "travail" },
+	{ id: 2, output: 2, text: "affaires professionnelles" },
+	{ id: 3, output: 3, text: "études" },
+	{ id: 4, output: 4, text: "achats" },
+	{ id: 5, output: 5, text: "soins, démarches admin" },
+	{ id: 6, output: 6, text: "loisirs" },
+	{ id: 7, output: 7, text: "visites" },
+	{ id: 8, output: 8, text: "vacances, week-end, tourisme" },
+	{ id: 9, output: 9, text: "rabattement sur transport en commun" },
+	{ id: 10, output: 10, text: "accompagnement + domicile" },
+	{ id: 11, output: 11, text: "accompagnement + travail" },
+	{ id: 12, output: 12, text: "accompagnement + affaires professionnelles" },
+	{ id: 13, output: 13, text: "accompagnement + études" },
+	{ id: 14, output: 14, text: "accompagnement + achats" },
+	{ id: 15, output: 15, text: "accompagnement + soins, démarches admin" },
+	{ id: 16, output: 16, text: "accompagnement + loisirs" },
+	{ id: 17, output: 17, text: "accompagnement + visites" },
+	{ id: 18, output: 18, text: "accompagnement + vacances, week-end, tourisme" },
+	{
+		id: 19,
+		output: 19,
+		text: "accompagnement + rabattement sur transport en commun",
+	},
+	{ id: 99, output: 99, text: "autre" },
+];
 const postes = [
 	{
 		id: 1,
@@ -176,6 +231,7 @@ const occupation = [
 	{ id: 9, output: "9", text: "9" },
 ];
 
+
 const origine = [
 	{ id: 1, output: "0", text: "domicile" },
 	{ id: 2, output: "1", text: "travail" },
@@ -208,43 +264,14 @@ const origine = [
 	{ id: 21, output: "99", text: "autre" },
 ];
 
-const destination = [
-	{ id: 1, output: "0", text: "domicile" },
-	{ id: 2, output: "1", text: "travail" },
-	{ id: 3, output: "2", text: "affaires professionnelles" },
-	{ id: 4, output: "3", text: "études" },
-	{ id: 5, output: "4", text: "achats" },
-	{ id: 6, output: "5", text: "soins, démarches admin" },
-	{ id: 7, output: "6", text: "loisirs" },
-	{ id: 8, output: "7", text: "visites" },
-	{ id: 9, output: "8", text: "vacances, week-end, tourisme" },
-	{ id: 10, output: "9", text: "rabattement sur transport en commun" },
-	{ id: 11, output: "10", text: "accompagnement + domicile" },
-	{ id: 12, output: "11", text: "accompagnement + travail" },
-	{ id: 13, output: "12", text: "accompagnement + affaires professionnelles" },
-	{ id: 14, output: "13", text: "accompagnement + études" },
-	{ id: 15, output: "14", text: "accompagnement + achats" },
-	{ id: 16, output: "15", text: "accompagnement + soins, démarches admin" },
-	{ id: 17, output: "16", text: "accompagnement + loisirs" },
-	{ id: 18, output: "17", text: "accompagnement + visites" },
-	{
-		id: 19,
-		output: "18",
-		text: "accompagnement + vacances, week-end, tourisme",
-	},
-	{
-		id: 20,
-		output: "19",
-		text: "accompagnement + rabattement sur transport en commun",
-	},
-	{ id: 21, output: "99", text: "autre" },
-];
+
+
 
 const frequence = [
-	{ id: 1, output: "1", text: "tous les jours ou presque" },
-	{ id: 2, output: "2", text: "une à 2 fois par semaine" },
-	{ id: 3, output: "3", text: "3 à 4 fois par mois" },
-	{ id: 4, output: "4", text: "plus rarement" },
+	{ id: 1, output: 1, text: "tous les jours ou presque" },
+	{ id: 2, output: 2, text: "une à 2 fois par semaine" },
+	{ id: 3, output: 3, text: "3 à 4 fois par mois" },
+	{ id: 4, output: 4, text: "plus rarement" },
 ];
 
 export {
@@ -253,6 +280,7 @@ export {
 	typeVehicule,
 	occupation,
 	origine,
-	destination,
 	frequence,
+	motifOrigine,
+	motifDestination
 };
