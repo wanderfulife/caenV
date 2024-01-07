@@ -62,7 +62,7 @@
       </button>
     </form>
   </div>
-  <button @click="downloadData" class="btn-data">Download Data</button>
+  <button v-show="allFieldsFilled" @click="downloadData" class="btn-data">Download Data</button>
 </template>
 
 <script setup>
@@ -92,6 +92,16 @@ const showReturnButton = ref(false);
 
 const showDropdown = ref(true);
 
+const allFieldsFilled = computed(() => {
+  return (
+    reponse.value.poste !== "" &&
+    reponse.value.plaque !== "" &&
+    reponse.value.type !== "" &&
+    reponse.value.occupation !== "" &&
+    reponse.value.origine !== ""
+  );
+});
+
 const selectCommune = (commune1, commune2) => {
   reponse.value.origine = commune1 + ' - ' + commune2;
   showDropdown.value = false; // Hide the dropdown
@@ -108,13 +118,14 @@ watch(
     reponse.value.plaque,
     reponse.value.type,
     reponse.value.occupation,
+    reponse.value.origine
   ],
-  ([poste, plaque, type]) => {
+  ([poste, plaque, type, occupation, origine]) => {
     if (poste !== "" && plaque !== "" && type !== "") {
       showSecondSet.value = true;
       showSubmitButton.value = true;
       showReturnButton.value = true;
-    } else {
+    }  else {
       showSecondSet.value = false;
       showSubmitButton.value = false;
       showReturnButton.value = false;
@@ -189,7 +200,7 @@ const downloadData = async () => {
       data.push(mappedData);
     });
 
-      data.sort((a, b) => {
+    data.sort((a, b) => {
       // Assuming q4 is a number. If it's a string or a different type, you might need to modify this comparison
       return a.q4 - b.q4;
     });
