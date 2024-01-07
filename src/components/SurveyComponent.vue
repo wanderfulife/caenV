@@ -99,7 +99,7 @@
       </button>
     </form>
   </div>
-  <button v-show="allFieldsFilled" @click="downloadData" class="btn-data">Download Data</button>
+  <!-- <button v-show="allFieldsFilled" @click="downloadData" class="btn-data">Download Data</button> -->
 </template>
 
 <script setup>
