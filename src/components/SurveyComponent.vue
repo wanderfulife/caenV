@@ -5,7 +5,6 @@
 
       <div v-if="!showSecondSet">
         <div v-if="choice === 0" class="form-group">
-          <label for="name">Prenom</label>
           <input class="form-control" type="text" v-model="reponse.name" placeholder="Prenom enqueteur"
             @keydown.enter.prevent />
           <button v-if="reponse.name.length >= 3" @click="next" class="btn-submit">Suivant</button>
@@ -24,12 +23,14 @@
         </div>
 
         <div v-if="choice === 2" class="form-group">
-          <label for="plaque">Code Pays (immatriculation du véhicule plaque à l'avant):</label>
-          <select id="plaque" v-model="reponse.plaque" class="form-control">
+          <label for="plaque">Code Pays :</label>
+          <!-- <select id="plaque" v-model="reponse.plaque" class="form-control">
             <option v-for="option in plaques" :key="option.id" :value="option.output">
               {{ option.text }}
             </option>
-          </select>
+          </select> -->
+           <input class="form-control" type="text" v-model="reponse.plaque" placeholder="Immatriculation du véhicule plaque à l'avant"
+              @keydown.enter.prevent />
           <button v-if="reponse.plaque" @click="next" class="btn-submit">Suivant</button>
           <button @click="back" class="btn-return">retour</button>
         </div>
