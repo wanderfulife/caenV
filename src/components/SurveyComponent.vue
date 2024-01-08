@@ -29,12 +29,15 @@
               {{ option.text }}
             </option>
           </select> -->
-           <input class="form-control" type="text" v-model="reponse.plaque" placeholder="Immatriculation du véhicule plaque à l'avant"
+           <input class="form-control" type="text" v-model="reponse.plaque" placeholder="Immatriculation"
               @keydown.enter.prevent />
           <button v-if="reponse.plaque" @click="next" class="btn-submit">Suivant</button>
           <button @click="back" class="btn-return">retour</button>
         </div>
 
+
+
+        
         <div v-if="choice === 3" class="form-group">
           <label for="type">Type de véhicule:</label>
           <select id="type" v-model="reponse.type" class="form-control">
@@ -43,6 +46,7 @@
             </option>
           </select>
           <button v-if="reponse.type" @click="next" class="btn-submit">Suivant</button>
+          <!-- button trigger showSecondSet-->
           <button @click="back" class="btn-return">retour</button>
         </div>
       </div>
