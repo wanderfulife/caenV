@@ -110,7 +110,7 @@
         <div v-else-if="reponse.occupation > 4">PL</div>
       </div>
 
-      <input v-show="allFieldsFilled" type="submit" value="Suivant" class="btn-submit" :disabled="isSubmitDisabled" />
+      <input v-show="allFieldsFilled" type="submit" value="Terminer" class="btn-submit" :disabled="isSubmitDisabled" />
     </form>
   </div>
   <button @click="downloadData" class="btn-data">Download Data</button>
