@@ -35,16 +35,6 @@
         <div v-if="reponse.type <= 4">
 
           <div class="form-group">
-            <input class="form-control" type="text" v-model="reponse.origine" placeholder="COMMUNE D'ORIGINE" />
-            <ul v-if="showDropdown && reponse.origine && filteredCommunesOrigine.length" class="commune-dropdown">
-              <li v-for="(item, index) in filteredCommunesOrigine" :key="`${item['CODE INSEE']}-${index}`"
-                @click="selectCommuneOrigine(item.COMMUNE, item.DEPARTEMENT)">
-                {{ item.COMMUNE }} - {{ item.DEPARTEMENT }}
-              </li>
-            </ul>
-          </div>
-
-          <div class="form-group">
             <label for="type">Nombre d'occupants:</label>
             <select id="type" v-model="reponse.occupation" class="form-control">
               <option v-for="option in occupation" :key="option.id" :value="option.output">
@@ -52,6 +42,13 @@
               </option>
             </select>
           </div>
+
+
+            <CommuneSelector 
+      v-model="reponse.origine" 
+      :postalCodePrefix="postalCodePrefix"
+    />
+
 
           <div class="form-group">
             <label for="type">Motif Origine:</label>
@@ -62,15 +59,10 @@
             </select>
           </div>
 
-          <div class="form-group">
-            <input class="form-control" type="text" v-model="reponse.destination" placeholder="COMMUNE DESTINATION" />
-            <ul v-if="showDropdown && reponse.destination && filteredCommunesDestination.length" class="commune-dropdown">
-              <li v-for="(item, index) in filteredCommunesDestination" :key="`${item['CODE INSEE']}-${index}`"
-                @click="selectCommuneDestination(item.COMMUNE, item.DEPARTEMENT)">
-                {{ item.COMMUNE }} - {{ item.DEPARTEMENT }}
-              </li>
-            </ul>
-          </div>
+            <CommuneSelector 
+      v-model="reponse.destination" 
+      :postalCodePrefix="postalCodePrefix"
+    />
 
           <div class="form-group">
             <label for="type">Motif Destination:</label>
@@ -89,7 +81,6 @@
               </option>
             </select>
           </div>
-
         </div>
         <div v-else-if="reponse.occupation > 4">PL</div>
       </div>
@@ -99,7 +90,7 @@
       </button>
     </form>
   </div>
-  <!-- <button v-show="allFieldsFilled" @click="downloadData" class="btn-data">Download Data</button> -->
+  <button v-show="allFieldsFilled" @click="downloadData" class="btn-data">Download Data</button>
 </template>
 
 <script setup>
@@ -109,10 +100,10 @@ import insee from "./output.json";
 import { db } from "../../firebaseConfig";
 import * as XLSX from "xlsx";
 import { collection, addDoc, getDocs } from "firebase/firestore";
+import CommuneSelector from './CommuneSelector.vue';
 
 const data = ref(insee);
-
-//to delete
+const postalCodePrefix = ref('');
 
 const surveyCollectionRef = collection(db, "Caen");
 const num = ref(1);
