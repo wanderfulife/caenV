@@ -27,7 +27,7 @@ const motifOrigine = [
 ];
 
 const motifDestination = [
-	{ id: 0, output: 0, text: "domicile" },
+	{ id: 0, output: "0", text: "domicile" },
 	{ id: 1, output: 1, text: "travail" },
 	{ id: 2, output: 2, text: "affaires professionnelles" },
 	{ id: 3, output: 3, text: "études" },

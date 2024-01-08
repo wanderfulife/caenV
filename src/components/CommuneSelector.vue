@@ -3,7 +3,7 @@
     <input class="form-control" type="text" v-model="localPostalCodePrefix"
       placeholder="Code Postal (Premiers chiffres)" />
     <input class="form-control" type="text" :value="modelValue" @input="updateCommune($event.target.value)"
-      placeholder="COMMUNE D'ORIGINE" />
+      placeholder="COMMUNE" />
 
     <ul v-if="showDropdown && modelValue && filteredCommunes.length" class="commune-dropdown">
       <li v-for="(item, index) in filteredCommunes" :key="`${item['CODE INSEE']}-${index}`" @click="selectCommune(item)">

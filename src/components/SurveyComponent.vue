@@ -2,112 +2,134 @@
   <div class="container">
     <h1>OD Caen</h1>
     <form @submit.prevent="submitSurvey">
+
       <div v-if="!showSecondSet">
-        <div class="form-group">
+        <div v-if="choice === 0" class="form-group">
+          <label for="name">Prenom</label>
+          <input class="form-control" type="text" v-model="reponse.name" placeholder="Prenom enqueteur"
+            @keydown.enter.prevent />
+          <button @click="next" class="btn-submit">Suivant</button>
+        </div>
+
+        <div v-if="choice === 1" class="form-group">
           <label for="poste">Poste</label>
           <select id="poste" v-model="reponse.poste" class="form-control">
             <option v-for="option in postes" :key="option.id" :value="option.output">
               {{ option.text }}
             </option>
           </select>
+          <button @click="next" class="btn-submit">Suivant</button>
+          <button @click="back" class="btn-return">retour</button>
+
         </div>
 
-        <div class="form-group">
+        <div v-if="choice === 2" class="form-group">
           <label for="plaque">Code Pays (immatriculation du véhicule plaque à l'avant):</label>
           <select id="plaque" v-model="reponse.plaque" class="form-control">
             <option v-for="option in plaques" :key="option.id" :value="option.output">
               {{ option.text }}
             </option>
           </select>
+          <button @click="next" class="btn-submit">Suivant</button>
+          <button @click="back" class="btn-return">retour</button>
         </div>
 
-        <div class="form-group">
+        <div v-if="choice === 3" class="form-group">
           <label for="type">Type de véhicule:</label>
           <select id="type" v-model="reponse.type" class="form-control">
             <option v-for="option in typeVehicule" :key="option.id" :value="option.output">
               {{ option.text }}
             </option>
           </select>
+          <button @click="back" class="btn-return">retour</button>
         </div>
       </div>
 
       <div v-else>
         <div v-if="reponse.type <= 4">
 
-          <div class="form-group">
+          <div v-if="choiceVL === 0" class="form-group">
             <label for="type">Nombre d'occupants:</label>
             <select id="type" v-model="reponse.occupation" class="form-control">
               <option v-for="option in occupation" :key="option.id" :value="option.output">
                 {{ option.text }}
               </option>
             </select>
+            <button @click="nextVL" class="btn-submit">Suivant</button>
+            <button @click="backVL1" class="btn-return">retour</button>
+          </div>
+
+          <div v-if="choiceVL === 1">
+            <label>Origine</label>
+            <CommuneSelector v-model="reponse.origine" />
+            <button @click="nextVL" class="btn-submit">Suivant</button>
+            <button @click="backVL" class="btn-return">retour</button>
           </div>
 
 
-            <CommuneSelector 
-      v-model="reponse.origine" 
-      :postalCodePrefix="postalCodePrefix"
-    />
-
-
-          <div class="form-group">
+          <div v-if="choiceVL === 2" class="form-group">
             <label for="type">Motif Origine:</label>
             <select id="type" v-model="reponse.motifOrigine" class="form-control">
               <option v-for="option in motifOrigine" :key="option.id" :value="option.output">
                 {{ option.text }}
               </option>
             </select>
+            <button @click="nextVL" class="btn-submit">Suivant</button>
+            <button @click="backVL" class="btn-return">retour</button>
           </div>
 
-            <CommuneSelector 
-      v-model="reponse.destination" 
-      :postalCodePrefix="postalCodePrefix"
-    />
+          <div v-if="choiceVL === 3">
+            <label>Destination</label>
+            <CommuneSelector v-model="reponse.destination" />
+            <button @click="nextVL" class="btn-submit">Suivant</button>
+            <button @click="backVL" class="btn-return">retour</button>
+          </div>
 
-          <div class="form-group">
+          <div v-if="choiceVL === 4" class="form-group">
             <label for="type">Motif Destination:</label>
             <select id="type" v-model="reponse.motifDestination" class="form-control">
               <option v-for="option in motifDestination" :key="option.id" :value="option.output">
                 {{ option.text }}
               </option>
             </select>
+            <button @click="nextVL" class="btn-submit">Suivant</button>
+            <button @click="backVL" class="btn-return">retour</button>
           </div>
 
-          <div class="form-group">
+          <div v-if="choiceVL === 5" class="form-group">
             <label for="type">Frequence du deplacement:</label>
             <select id="type" v-model="reponse.frequence" class="form-control">
               <option v-for="option in frequence" :key="option.id" :value="option.output">
                 {{ option.text }}
               </option>
             </select>
+            <button @click="backVL" class="btn-return">retour</button>
           </div>
         </div>
         <div v-else-if="reponse.occupation > 4">PL</div>
       </div>
-      <input v-show="showSubmitButton" type="submit" value="Suivant" class="btn-submit" :disabled="isSubmitDisabled" />
-      <button v-show="showReturnButton" type="button" @click="returnButton" class="btn-return">
-        Retour
-      </button>
+      
+      <input v-show="allFieldsFilled" type="submit" value="Suivant" class="btn-submit" :disabled="isSubmitDisabled" />
     </form>
   </div>
-  <button v-show="allFieldsFilled" @click="downloadData" class="btn-data">Download Data</button>
+  <button  @click="downloadData" class="btn-data">Download Data</button>
 </template>
 
 <script setup>
 import { ref, computed, watch } from "vue";
 import { postes, plaques, typeVehicule, occupation, motifOrigine, motifDestination, frequence } from "./reponses";
-import insee from "./output.json";
 import { db } from "../../firebaseConfig";
 import * as XLSX from "xlsx";
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import CommuneSelector from './CommuneSelector.vue';
 
-const data = ref(insee);
-const postalCodePrefix = ref('');
+const choice = ref(0);
+const choiceVL = ref(0);
 
 const surveyCollectionRef = collection(db, "Caen");
 const num = ref(1);
 const reponse = ref({
+  name: "",
   poste: "",
   plaque: "",
   type: "",
@@ -121,43 +143,42 @@ const reponse = ref({
 });
 
 const showSecondSet = ref(false);
-const showSubmitButton = ref(false);
-const showReturnButton = ref(false);
-
-const showDropdown = ref(true);
 
 
-const allFieldsFilled = true
-// const allFieldsFilled = computed(() => {
-//   return (
-//     reponse.value.poste !== "" &&
-//     reponse.value.plaque !== "" &&
-//     reponse.value.type !== "" &&
-//     reponse.value.occupation !== "" &&
-//     reponse.value.origine !== "" &&
-//     reponse.value.motifOrigine !== "" &&
-//     reponse.value.destination !== "" &&
-//     reponse.value.motifDestination !== "" &&
-//   );
-// });
-
-const selectCommuneOrigine = (commune1, commune2) => {
-  reponse.value.origine = commune1 + ' - ' + commune2;
-  showDropdown.value = false; // Hide the dropdown
+const next = () => {
+  choice.value++;
 };
 
-const selectCommuneDestination = (commune1, commune2) => {
-  reponse.value.destination = commune1 + ' - ' + commune2;
-  showDropdown.value = false; // Hide the dropdown
+const back = () => {
+  choice.value--;
 };
 
-// To show the dropdown again when the user types
-watch(() => reponse.value.origine, (newValue) => {
-  showDropdown.value = Boolean(newValue);
+const nextVL = () => {
+  choiceVL.value++;
+};
+
+const backVL = () => {
+  choiceVL.value--;
+};
+
+const backVL1 = () => {
+reponse.value.type = ""
+}
+
+const allFieldsFilled = computed(() => {
+  return (
+    reponse.value.poste !== "" &&
+    reponse.value.plaque !== "" &&
+    reponse.value.type !== "" &&
+    reponse.value.occupation !== "" &&
+    reponse.value.origine !== "" &&
+    reponse.value.motifOrigine !== "" &&
+    reponse.value.destination !== "" &&
+    reponse.value.motifDestination !== "" &&
+    reponse.value.frequence !== ""
+  );
 });
-watch(() => reponse.value.destination, (newValue) => {
-  showDropdown.value = Boolean(newValue);
-});
+
 
 watch(
   () => [
@@ -170,35 +191,17 @@ watch(
   ([poste, plaque, type]) => {
     if (poste !== "" && plaque !== "" && type !== "") {
       showSecondSet.value = true;
-      showSubmitButton.value = true;
-      showReturnButton.value = true;
     } else {
       showSecondSet.value = false;
-      showSubmitButton.value = false;
-      showReturnButton.value = false;
+ 
     }
   }
 );
 
 
-const filteredCommunesOrigine = computed(() => {
-  return data.value.filter(item =>
-    item.COMMUNE.toLowerCase().includes(reponse.value.origine.toLowerCase())
-  );
-});
-
-const filteredCommunesDestination = computed(() => {
-  return data.value.filter(item =>
-    item.COMMUNE.toLowerCase().includes(reponse.value.destination.toLowerCase())
-  );
-});
-
-const returnButton = () => {
-  reponse.value.type = "";
-};
-
 const isSubmitDisabled = computed(() => {
   return (
+    reponse.value.name === "" ||
     reponse.value.poste === "" ||
     reponse.value.plaque === "" ||
     reponse.value.type === "" ||
@@ -215,7 +218,7 @@ const submitSurvey = async () => {
   await addDoc(surveyCollectionRef, {
     q1: reponse.value.poste,
     q2: new Date().toLocaleDateString("fr-FR").replace(/\//g, "-"),
-    q4: reponse.value.num,
+    q4: reponse.value.name,
     q5: new Date().toLocaleTimeString("fr-FR").slice(0, 8),
     q6: reponse.value.plaque,
     q7: reponse.value.type,
@@ -226,7 +229,9 @@ const submitSurvey = async () => {
     q12: reponse.value.motifDestination,
     q13: reponse.value.frequence,
   });
-  reponse.value.num++;
+  choice.value = 0;
+  choiceVL.value = 0;
+  reponse.value.name = "";
   reponse.value.poste = "";
   reponse.value.plaque = "";
   reponse.value.type = "";
@@ -251,7 +256,7 @@ const downloadData = async () => {
         q1: docData.q1 || "",
         q2: docData.q2 || "",
         q3: doc.id, // Firebase document ID
-        q4: docData.q4 || "",
+        name: docData.q4 || "",
         q5: docData.q5 || "",
         q6: docData.q6 || "",
         q7: docData.q7 || "",
@@ -289,7 +294,7 @@ const downloadData = async () => {
         "q1",
         "q2",
         "q3",
-        "q4",
+        "name",
         "q5",
         "q6",
         "q7",
@@ -343,7 +348,7 @@ label {
 }
 
 .form-control {
-  width: 100%;
+  width: 90%;
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #333;
@@ -356,6 +361,7 @@ label {
   background-color: #4caf50;
   color: white;
   padding: 10px 20px;
+  margin-top: 5%;
   border: none;
   border-radius: 5px;
   cursor: pointer;
