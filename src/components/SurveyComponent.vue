@@ -8,7 +8,7 @@
           <label for="name">Prenom</label>
           <input class="form-control" type="text" v-model="reponse.name" placeholder="Prenom enqueteur"
             @keydown.enter.prevent />
-          <button @click="next" class="btn-submit">Suivant</button>
+          <button v-if="reponse.name.length >= 3" @click="next" class="btn-submit">Suivant</button>
         </div>
 
         <div v-if="choice === 1" class="form-group">
@@ -18,7 +18,7 @@
               {{ option.text }}
             </option>
           </select>
-          <button @click="next" class="btn-submit">Suivant</button>
+          <button v-if="reponse.poste" @click="next" class="btn-submit">Suivant</button>
           <button @click="back" class="btn-return">retour</button>
 
         </div>
@@ -30,7 +30,7 @@
               {{ option.text }}
             </option>
           </select>
-          <button @click="next" class="btn-submit">Suivant</button>
+          <button v-if="reponse.plaque" @click="next" class="btn-submit">Suivant</button>
           <button @click="back" class="btn-return">retour</button>
         </div>
 
@@ -41,6 +41,7 @@
               {{ option.text }}
             </option>
           </select>
+          <button v-if="reponse.type" @click="next" class="btn-submit">Suivant</button>
           <button @click="back" class="btn-return">retour</button>
         </div>
       </div>
@@ -55,14 +56,14 @@
                 {{ option.text }}
               </option>
             </select>
-            <button @click="nextVL" class="btn-submit">Suivant</button>
+            <button v-if="reponse.occupation" @click="nextVL" class="btn-submit">Suivant</button>
             <button @click="backVL1" class="btn-return">retour</button>
           </div>
 
           <div v-if="choiceVL === 1">
             <label>Origine</label>
             <CommuneSelector v-model="reponse.origine" />
-            <button @click="nextVL" class="btn-submit">Suivant</button>
+            <button v-if="reponse.origine" @click="nextVL" class="btn-submit">Suivant</button>
             <button @click="backVL" class="btn-return">retour</button>
           </div>
 
@@ -74,14 +75,14 @@
                 {{ option.text }}
               </option>
             </select>
-            <button @click="nextVL" class="btn-submit">Suivant</button>
+            <button v-if="reponse.motifOrigine" @click="nextVL" class="btn-submit">Suivant</button>
             <button @click="backVL" class="btn-return">retour</button>
           </div>
 
           <div v-if="choiceVL === 3">
             <label>Destination</label>
             <CommuneSelector v-model="reponse.destination" />
-            <button @click="nextVL" class="btn-submit">Suivant</button>
+            <button v-if="reponse.destination" @click="nextVL" class="btn-submit">Suivant</button>
             <button @click="backVL" class="btn-return">retour</button>
           </div>
 
@@ -92,7 +93,7 @@
                 {{ option.text }}
               </option>
             </select>
-            <button @click="nextVL" class="btn-submit">Suivant</button>
+            <button v-if="reponse.motifDestination" @click="nextVL" class="btn-submit">Suivant</button>
             <button @click="backVL" class="btn-return">retour</button>
           </div>
 
@@ -108,11 +109,11 @@
         </div>
         <div v-else-if="reponse.occupation > 4">PL</div>
       </div>
-      
+
       <input v-show="allFieldsFilled" type="submit" value="Suivant" class="btn-submit" :disabled="isSubmitDisabled" />
     </form>
   </div>
-  <button  @click="downloadData" class="btn-data">Download Data</button>
+  <button @click="downloadData" class="btn-data">Download Data</button>
 </template>
 
 <script setup>
@@ -162,7 +163,7 @@ const backVL = () => {
 };
 
 const backVL1 = () => {
-reponse.value.type = ""
+  reponse.value.type = ""
 }
 
 const allFieldsFilled = computed(() => {
@@ -193,7 +194,7 @@ watch(
       showSecondSet.value = true;
     } else {
       showSecondSet.value = false;
- 
+
     }
   }
 );
