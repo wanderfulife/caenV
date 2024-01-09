@@ -24,20 +24,12 @@
 
         <div v-if="choice === 2" class="form-group">
           <label for="plaque">Code Pays :</label>
-          <!-- <select id="plaque" v-model="reponse.plaque" class="form-control">
-            <option v-for="option in plaques" :key="option.id" :value="option.output">
-              {{ option.text }}
-            </option>
-          </select> -->
-           <input class="form-control" type="text" v-model="reponse.plaque" placeholder="Immatriculation"
-              @keydown.enter.prevent />
+          <input class="form-control" type="text" v-model="reponse.plaque" placeholder="Immatriculation"
+            @keydown.enter.prevent />
           <button v-if="reponse.plaque" @click="next" class="btn-submit">Suivant</button>
           <button @click="back" class="btn-return">retour</button>
         </div>
 
-
-
-        
         <div v-if="choice === 3" class="form-group">
           <label for="type">Type de véhicule:</label>
           <select id="type" v-model="reponse.type" class="form-control">
@@ -45,8 +37,8 @@
               {{ option.text }}
             </option>
           </select>
-          <button v-if="reponse.type" @click="next" class="btn-submit">Suivant</button>
           <!-- button trigger showSecondSet-->
+          <button v-if="reponse.type" @click="buttonSecondSet" class="btn-submit">Suivant</button>
           <button @click="back" class="btn-return">retour</button>
         </div>
       </div>
@@ -150,6 +142,10 @@ const reponse = ref({
 
 const showSecondSet = ref(false);
 
+const buttonSecondSet = () => {
+  showSecondSet.value = true;
+}
+
 
 const next = () => {
   choice.value++;
@@ -186,23 +182,6 @@ const allFieldsFilled = computed(() => {
 });
 
 
-watch(
-  () => [
-    reponse.value.poste,
-    reponse.value.plaque,
-    reponse.value.type,
-    reponse.value.occupation,
-
-  ],
-  ([poste, plaque, type]) => {
-    if (poste !== "" && plaque !== "" && type !== "") {
-      showSecondSet.value = true;
-    } else {
-      showSecondSet.value = false;
-
-    }
-  }
-);
 
 
 const isSubmitDisabled = computed(() => {
@@ -246,7 +225,8 @@ const submitSurvey = async () => {
   reponse.value.motifOrigine = "";
   reponse.value.destination = "";
   reponse.value.motifDestination = "";
-  reponse.value.frequence = ""
+  reponse.value.frequence = "";
+  showSecondSet.value = false;
 };
 
 const downloadData = async () => {
@@ -338,23 +318,22 @@ body {
 .container {
   background-color: #1e1e1e;
   color: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 300px;
+  width: 50%;
+  padding: auto;
   margin: auto;
-}
-
-.form-group {
-  margin-bottom: 15px;
 }
 
 label {
   display: block;
   margin-bottom: 5px;
 }
+.form-group {
+  margin-bottom: 15px;
+}
+
 
 .form-control {
-  width: 90%;
+  width: 100%;
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #333;
@@ -363,7 +342,11 @@ label {
   text-transform: uppercase;
 }
 
+.form-control, .btn-submit {
+  box-sizing: border-box;
+}
 .btn-submit {
+  width: 100%;
   background-color: #4caf50;
   color: white;
   padding: 10px 20px;
@@ -371,7 +354,6 @@ label {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  width: 100%;
 }
 
 .btn-return {
