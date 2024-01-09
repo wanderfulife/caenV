@@ -353,7 +353,7 @@ label {
   background-color: #4caf50;
   color: white;
   padding: 10px 20px;
-  margin-top: 1%;
+  margin-top: 1.5%;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -382,7 +382,7 @@ label {
   background-color: #898989;
   color: white;
   padding: 10px 20px;
-  margin: 10px 0;
+  margin-top: 1.5%;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -437,6 +437,7 @@ h1 {
 
 input, select, button {
   font-size: 16px;
+  padding: 10px ;
 }
 
 </style>
