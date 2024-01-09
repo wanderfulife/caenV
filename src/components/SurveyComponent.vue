@@ -1,6 +1,16 @@
 <template>
   <div class="container">
-    <h1>OD Caen</h1>
+    <div >
+      <h1 v-if="choice === 0" >OD Caen</h1>
+      <h1 v-if="choice === 1" >Poste</h1>
+      <h1 v-if="choice === 2" >Immatriculation</h1>
+      <h1 v-if="choice === 3" >Type de véhicule</h1>
+      <h1 v-if="reponse.type <= 4 && choiceVL === 1" >Origine</h1>
+      <h1 v-if="reponse.type <= 4 && choiceVL === 2" >Motif origine</h1>
+      <h1 v-if="reponse.type <= 4 && choiceVL === 3" >Destination</h1>
+      <h1 v-if="reponse.type <= 4 && choiceVL === 4" >Motif destination</h1>
+      <h1 v-if="reponse.type <= 4 && choiceVL === 5" >Fréquence du déplacement</h1>
+    </div>
     <form @submit.prevent="submitSurvey">
 
       <div v-if="!showSecondSet">
@@ -11,7 +21,6 @@
         </div>
 
         <div v-if="choice === 1" class="form-group">
-          <label for="poste">Poste</label>
           <select id="poste" v-model="reponse.poste" class="form-control">
             <option v-for="option in postes" :key="option.id" :value="option.output">
               {{ option.text }}
@@ -23,15 +32,13 @@
         </div>
 
         <div v-if="choice === 2" class="form-group">
-          <label for="plaque">Code Pays :</label>
-          <input class="form-control" type="text" v-model="reponse.plaque" placeholder="Immatriculation"
+          <input class="form-control" type="text" v-model="reponse.plaque" placeholder="Plaque avant"
             @keydown.enter.prevent />
           <button v-if="reponse.plaque" @click="next" class="btn-submit">Suivant</button>
           <button @click="back" class="btn-return">retour</button>
         </div>
 
         <div v-if="choice === 3" class="form-group">
-          <label for="type">Type de véhicule:</label>
           <select id="type" v-model="reponse.type" class="form-control">
             <option v-for="option in typeVehicule" :key="option.id" :value="option.output">
               {{ option.text }}
@@ -45,9 +52,8 @@
 
       <div v-else>
         <div v-if="reponse.type <= 4">
-
           <div v-if="choiceVL === 0" class="form-group">
-            <label for="type">Nombre d'occupants:</label>
+      <h1 >Nombre d'occupants</h1>
             <select id="type" v-model="reponse.occupation" class="form-control">
               <option v-for="option in occupation" :key="option.id" :value="option.output">
                 {{ option.text }}
@@ -58,7 +64,6 @@
           </div>
 
           <div v-if="choiceVL === 1">
-            <label>Origine</label>
             <CommuneSelector v-model="reponse.origine" />
             <button v-if="reponse.origine" @click="nextVL" class="btn-submit">Suivant</button>
             <button @click="backVL" class="btn-return">retour</button>
@@ -66,7 +71,6 @@
 
 
           <div v-if="choiceVL === 2" class="form-group">
-            <label for="type">Motif Origine:</label>
             <select id="type" v-model="reponse.motifOrigine" class="form-control">
               <option v-for="option in motifOrigine" :key="option.id" :value="option.output">
                 {{ option.text }}
@@ -77,14 +81,12 @@
           </div>
 
           <div v-if="choiceVL === 3">
-            <label>Destination</label>
             <CommuneSelector v-model="reponse.destination" />
             <button v-if="reponse.destination" @click="nextVL" class="btn-submit">Suivant</button>
             <button @click="backVL" class="btn-return">retour</button>
           </div>
 
           <div v-if="choiceVL === 4" class="form-group">
-            <label for="type">Motif Destination:</label>
             <select id="type" v-model="reponse.motifDestination" class="form-control">
               <option v-for="option in motifDestination" :key="option.id" :value="option.output">
                 {{ option.text }}
@@ -95,7 +97,6 @@
           </div>
 
           <div v-if="choiceVL === 5" class="form-group">
-            <label for="type">Frequence du deplacement:</label>
             <select id="type" v-model="reponse.frequence" class="form-control">
               <option v-for="option in frequence" :key="option.id" :value="option.output">
                 {{ option.text }}
@@ -107,7 +108,7 @@
         <div v-else-if="reponse.occupation > 4">PL</div>
       </div>
 
-      <input v-show="allFieldsFilled" type="submit" value="Terminer" class="btn-submit" :disabled="isSubmitDisabled" />
+      <input v-show="allFieldsFilled" type="submit" value="Terminer" class="btn-fin" :disabled="isSubmitDisabled" />
     </form>
   </div>
   <button @click="downloadData" class="btn-data">Download Data</button>
@@ -130,7 +131,7 @@ const reponse = ref({
   name: "",
   poste: "",
   plaque: "",
-  type: "",
+  type: 0,
   num: num.value,
   occupation: "",
   origine: "",
@@ -144,6 +145,8 @@ const showSecondSet = ref(false);
 
 const buttonSecondSet = () => {
   showSecondSet.value = true;
+  choice.value++;
+
 }
 
 
@@ -350,10 +353,29 @@ label {
   background-color: #4caf50;
   color: white;
   padding: 10px 20px;
-  margin-top: 5%;
+  margin-top: 1%;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.btn-submit:hover {
+  background-color: #45a049;
+}
+
+.btn-fin {
+  width: 100%;
+  background-color: #4c4faf;
+  color: white;
+  padding: 20px 20px;
+  margin-top: 20%;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-fin:hover {
+  background-color: #45a049;
 }
 
 .btn-return {
@@ -369,10 +391,6 @@ label {
 
 .btn-return:hover {
   background-color: #839684;
-}
-
-.btn-submit:hover {
-  background-color: #45a049;
 }
 
 .btn-data {
@@ -417,9 +435,8 @@ h1 {
   background-color: #f0f0f0;
 }
 
-input[type="text"] {
+input, select, button {
   font-size: 16px;
 }
-
 
 </style>
