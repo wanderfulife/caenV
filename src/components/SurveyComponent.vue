@@ -419,8 +419,10 @@ h1 {
 
 input[type="text"] {
   font-size: 16px;
-  padding: 10px;
-
-  /* Minimum font size to prevent zoom on mobile */
 }
+
+select#poste.form-control {
+  padding: 10px;
+}
+
 </style>
