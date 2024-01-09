@@ -422,7 +422,7 @@ input[type="text"] {
 }
 
 select#poste.form-control {
-  padding: 10px;
+  padding: 10%;
 }
 
 </style>
