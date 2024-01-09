@@ -318,7 +318,7 @@ body {
 .container {
   background-color: #1e1e1e;
   color: white;
-  width: 50%;
+  width: 75%;
   padding: auto;
   margin: auto;
 }
