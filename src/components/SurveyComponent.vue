@@ -334,7 +334,7 @@ label {
 
 .form-control {
   width: 100%;
-  padding: 20px;
+  padding: 10px;
   border-radius: 5px;
   border: 1px solid #333;
   background-color: #333;
@@ -419,6 +419,8 @@ h1 {
 
 input[type="text"] {
   font-size: 16px;
+  padding: 10px;
+
   /* Minimum font size to prevent zoom on mobile */
 }
 </style>
