@@ -421,8 +421,5 @@ input[type="text"] {
   font-size: 16px;
 }
 
-select#poste.form-control {
-  padding: 10%;
-}
 
 </style>
