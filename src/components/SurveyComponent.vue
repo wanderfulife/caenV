@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div >
-      <h1 v-if="choice === 0" >OD Caen</h1>
+      <h1 v-if="choice === 0" >CAEN</h1>
       <h1 v-if="choice === 1" >Poste</h1>
       <h1 v-if="choice === 2" >Immatriculation</h1>
       <h1 v-if="choice === 3" >Type de véhicule</h1>
@@ -11,8 +11,10 @@
       <h1 v-if="reponse.type <= 4 && choiceVL === 4" >Motif destination</h1>
       <h1 v-if="reponse.type <= 4 && choiceVL === 5" >Fréquence du déplacement</h1>
     </div>
-    <form @submit.prevent="submitSurvey">
-
+  <div v-if="!start">
+      <button @click="startSurvey" class="btn-fin">COMMENCER QUESTIONNAIRE</button>
+  </div>
+    <form v-else @submit.prevent="submitSurvey">
       <div v-if="!showSecondSet">
         <div v-if="choice === 0" class="form-group">
           <input class="form-control" type="text" v-model="reponse.name" placeholder="Prenom enqueteur"
@@ -28,7 +30,6 @@
           </select>
           <button v-if="reponse.poste" @click="next" class="btn-submit">Suivant</button>
           <button @click="back" class="btn-return">retour</button>
-
         </div>
 
         <div v-if="choice === 2" class="form-group">
@@ -115,20 +116,23 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
-import { postes, plaques, typeVehicule, occupation, motifOrigine, motifDestination, frequence } from "./reponses";
-import { db } from "../../firebaseConfig";
-import * as XLSX from "xlsx";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { ref, computed } from "vue";
 import CommuneSelector from './CommuneSelector.vue';
+import { postes, typeVehicule, occupation, motifOrigine, motifDestination, frequence } from "./reponses";
+import { db } from "../../firebaseConfig";
+import { collection, addDoc, getDocs } from "firebase/firestore";
+import * as XLSX from "xlsx";
 
-const choice = ref(0);
-const choiceVL = ref(0);
 
 const surveyCollectionRef = collection(db, "Caen");
+const start = ref(false);
+const startDate = ref('')
 const num = ref(1);
+const choice = ref(0);
+const choiceVL = ref(0);
+const showSecondSet = ref(false);
 const reponse = ref({
-  name: "",
+  name: '',
   poste: "",
   plaque: "",
   type: 0,
@@ -141,13 +145,18 @@ const reponse = ref({
   frequence: ""
 });
 
-const showSecondSet = ref(false);
+
+
+const startSurvey = () => {
+  start.value = true;
+  startDate.value = new Date().toLocaleTimeString("fr-FR").slice(0, 8);
+}
 
 const buttonSecondSet = () => {
   showSecondSet.value = true;
   choice.value++;
-
 }
+
 
 
 const next = () => {
@@ -230,6 +239,8 @@ const submitSurvey = async () => {
   reponse.value.motifDestination = "";
   reponse.value.frequence = "";
   showSecondSet.value = false;
+  start.value = false;
+
 };
 
 const downloadData = async () => {
@@ -322,7 +333,7 @@ body {
   background-color: #1e1e1e;
   color: white;
   width: 75%;
-  padding: auto;
+  padding: 5% 0;
   margin: auto;
 }
 
